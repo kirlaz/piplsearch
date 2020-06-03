@@ -3,3 +3,5 @@ https://docs.pipl.com/reference#response
 212.57.99.75:56715
 логин invadersp
 пароль NeoMagik27$
+
+https://stackoverflow.com/questions/52143913/authentication-using-cookies-in-spring-boot

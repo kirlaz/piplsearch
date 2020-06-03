@@ -15,22 +15,51 @@
 
 <div class="container-fluid">
     <h5>MGAP Search API</h5>
+</div>
 
-    <h6>/api/search</h6>
+<div class="container-fluid border-top">
+    <h6>POST /api/search</h6>
     <p>
-        <b>Примечание:</b><br/>
+        Поиск персон через обращение к API Pipl.com<br/>
+        Поддерживает 2 варианта поиска: по набору поисковых параметров или по searchPointer.
+        Переход по searchPointer должен использоватеься при переходе из списка возможных совпадений.
+        Чтобы не снималась оплата в запрос всегда добавляется: clark.kent@example.com и возвращается одна и тажа запись.
+    </p>
+    <p>
         Запрос: <a href="https://docs.pipl.com/reference#person">https://docs.pipl.com/reference#person</a></br>
-        Ответ: <a href="https://docs.pipl.com/reference#response">https://docs.pipl.com/reference#response</a>
+        Ответ: <a href="https://docs.pipl.com/reference#response">https://docs.pipl.com/reference#response</a></br>
     </p>
     <p>
         <b>Пример:</b><br/>
         curl --location --request POST 'http://search.mgap.ru:8081/api/search' \
         --header 'Content-Type: application/json' \
-        --data-raw '{"names":[{"first":"Kirill","last":"Lazarenko"}],"addresses":[{"raw":"Moscow, Russia"}],"phones":[],"emails":[{"address":"clark.kent@example.com"}]}'
+        --data-raw '{"names":[{"first":"Kirill","last":"Lazarenko"}],"addresses":[{"raw":"Moscow,
+        Russia"}],"phones":[],"emails":[{"address":"clark.kent@example.com"}]}'
     </p>
-
-
 </div>
+
+<div class="container-fluid border-top">
+    <h6>GET /api/getPerson</h6>
+    <p>
+        Возвращает персону из локальной базы данных по идентификатору personId
+    </p>
+    <p>
+        Запрос: personId - идентификатор персоны</br>
+        Ответ: SearchResponse + personId
+    </p>
+</div>
+
+<div class="container-fluid border-top">
+    <h6>GET /api/refreshPerson</h6>
+    <p>
+        Обновляет сохраненную персону через вызов к API Pipl.com
+    </p>
+    <p>
+        Запрос: personId - идентификатор персоны</br>
+        Ответ: SearchResponse + personId
+    </p>
+</div>
+
 
 </body>
 </html>

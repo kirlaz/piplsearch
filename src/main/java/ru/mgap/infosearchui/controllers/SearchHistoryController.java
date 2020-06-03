@@ -1,7 +1,8 @@
 package ru.mgap.infosearchui.controllers;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.mgap.infosearchui.dataobject.PersonHistoryInfo;
+import ru.mgap.infosearchui.dataobject.SearchResponsePreview;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,8 @@ import java.util.List;
 @RestController
 public class SearchHistoryController {
 
-    public List<PersonHistoryInfo> getHistory() {
+    @GetMapping("/history")
+    public List<SearchResponsePreview> getHistory() {
         //todo: get user id
         return new ArrayList<>();
     }

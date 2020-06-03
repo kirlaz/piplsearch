@@ -17,6 +17,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.mgap.infosearchui.dataobject.SearchResponse;
 
 @Service
 public class PersonSearchService {
@@ -67,19 +68,9 @@ public class PersonSearchService {
         return response;
     }
 
-    public SearchAPIResponse getHistoryPerson(long personId) {
+    public SearchResponse getHistoryPerson(long personId) {
         //TODO
         return null;
-    }
-
-    public SearchAPIResponse refreshPerson(long personId) {
-        SearchAPIResponse historyData = getHistoryPerson(personId);
-
-        SearchRequest request = new SearchRequest();
-        request.setSearchPointer(historyData.getPerson().getSearchPointer());
-        SearchAPIResponse response = search(request);
-
-        return response;
     }
 
     private void savePerson(SearchAPIResponse response) {

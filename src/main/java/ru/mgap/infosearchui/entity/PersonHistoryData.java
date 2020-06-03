@@ -1,10 +1,12 @@
 package ru.mgap.infosearchui.entity;
 
-import com.pipl.api.search.SearchAPIResponse;
+import java.util.Date;
 
 public class PersonHistoryData {
     private long localPersonId;
-    private SearchAPIResponse response;
+    private String name;
+    private String responseRaw;
+    private Date searchDate;
 
     public long getLocalPersonId() {
         return localPersonId;
@@ -14,11 +16,4 @@ public class PersonHistoryData {
         this.localPersonId = localPersonId;
     }
 
-    public SearchAPIResponse getResponse() {
-        return response;
-    }
-
-    public void setResponse(SearchAPIResponse response) {
-        this.response = response;
-    }
 }
