@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ssh invadersp@212.57.99.75 -p56715
