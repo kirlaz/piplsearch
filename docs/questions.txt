@@ -1,0 +1,7 @@
+Normally, you would pay for each API request that resulted in a match, where a match is either a perfect match, or a list of possible persons.
+> т.е. запрос вернет 100 записей в блоке possible_persons, нужно будет заплатить за 100?
+
+Откуда берется блок Possibly Related Results
+
+
+
