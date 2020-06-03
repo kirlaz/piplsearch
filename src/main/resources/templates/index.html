@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Users</title>
+    <title>API</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -14,7 +14,22 @@
 <body>
 
 <div class="container-fluid">
-    <h5>Поиск</h5>
+    <h5>MGAP Search API</h5>
+
+    <h6>/api/search</h6>
+    <p>
+        <b>Примечание:</b><br/>
+        Запрос: <a href="https://docs.pipl.com/reference#person">https://docs.pipl.com/reference#person</a></br>
+        Ответ: <a href="https://docs.pipl.com/reference#response">https://docs.pipl.com/reference#response</a>
+    </p>
+    <p>
+        <b>Пример:</b><br/>
+        curl --location --request POST 'http://search.mgap.ru:8081/api/search' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{"names":[{"first":"Kirill","last":"Lazarenko"}],"addresses":[{"raw":"Moscow, Russia"}],"phones":[],"emails":[{"address":"clark.kent@example.com"}]}'
+    </p>
+
+
 </div>
 
 </body>
