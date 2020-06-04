@@ -2,6 +2,7 @@ package ru.mgap.infosearchui;
 
 import com.pipl.api.data.Utils;
 import com.pipl.api.search.SearchAPIRequest;
+import ru.mgap.infosearchui.dataobject.AuthRequest;
 
 import java.io.IOException;
 
@@ -19,5 +20,14 @@ public class Json {
 
         String reqJson = Utils.toJson(request.getPerson());
         System.out.println(reqJson);
+
+
+        AuthRequest authRequest = new AuthRequest();
+        authRequest.setLogin("admin");
+        authRequest.setPassword("password");
+
+        String authRequestJson = Utils.toJson(authRequest);
+        System.out.println(authRequestJson);
+
     }
 }
