@@ -7,8 +7,9 @@ import com.pipl.api.search.SearchAPIRequest;
 import com.pipl.api.search.SearchAPIResponse;
 import com.pipl.api.search.SearchConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import ru.mgap.infosearchui.dataobject.*;
 
 import java.io.IOException;
@@ -17,11 +18,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mgap.infosearchui.entity.SearchHistory;
-import ru.mgap.infosearchui.entity.User;
 import ru.mgap.infosearchui.repositories.SearchHistoryRepository;
 
 @Service
@@ -103,16 +102,10 @@ public class PersonSearchService {
         return searchHistoryList;
     }
 
-    public HistoryResponse getHistory(HistoryRequest request) {
-        int start = request.getPage() * request.getPageSize();
-        int end = start + request.getPageSize();
-
-//        List<SearchHistory> searchHistoryList = searchHistoryRepository.findByParams(
-//                request.getStartDate(), request.getEndDate(), request.getUserLogin(), start, end);
-
-
-        HistoryResponse historyResponse = new HistoryResponse();
-
-        return historyResponse;
+    public Page<SearchHistory> getHistoryPage(HistoryRequest request) {
+        Page<SearchHistory> searchHistoryPage = searchHistoryRepository.findByLoginBetweenStartAndEndDate(
+                request.getUserLogin(), request.getStartDate(), request.getEndDate(),
+                PageRequest.of(request.getCurrentPage(), request.getPageSize()));
+        return searchHistoryPage;
     }
 }

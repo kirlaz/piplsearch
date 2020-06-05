@@ -6,8 +6,8 @@ public class HistoryRequest {
     private String userLogin;
     private Date startDate;
     private Date endDate;
-    private int page;
-    private int pageSize;
+    private int currentPage;
+    private int pageSize = 10;
 
     public String getUserLogin() {
         return userLogin;
@@ -33,12 +33,12 @@ public class HistoryRequest {
         this.endDate = endDate;
     }
 
-    public int getPage() {
-        return page;
+    public int getCurrentPage() {
+        return currentPage;
     }
 
-    public void setPage(int page) {
-        this.page = page;
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 
     public int getPageSize() {

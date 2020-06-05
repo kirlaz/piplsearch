@@ -4,11 +4,9 @@ import com.pipl.api.data.Utils;
 import com.pipl.api.search.SearchAPIResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-import ru.mgap.infosearchui.dataobject.AuthContext;
-import ru.mgap.infosearchui.dataobject.HistoryRequest;
-import ru.mgap.infosearchui.dataobject.SearchRequest;
-import ru.mgap.infosearchui.dataobject.SearchResponsePreview;
+import ru.mgap.infosearchui.dataobject.*;
 import ru.mgap.infosearchui.entity.SearchHistory;
 import ru.mgap.infosearchui.exception.AuthException;
 import ru.mgap.infosearchui.service.PersonSearchService;
@@ -55,26 +53,36 @@ public class InfoSearchController {
     public List<SearchResponsePreview> getHistory(HttpServletRequest request) {
         AuthContext authContext = checkAuth(request);
 
-        List<SearchHistory> searchHistoryList = personSearchService.getHistory(authContext.getLogin());
-        List<SearchResponsePreview> searchResponsePreviews = searchHistoryList.stream()
-                .map(h -> new SearchResponsePreview(h))
+        HistoryRequest historyRequest = new HistoryRequest();
+        historyRequest.setPageSize(5);
+        historyRequest.setUserLogin(authContext.getLogin());
+        Page<SearchHistory> searchHistoryPage = personSearchService.getHistoryPage(historyRequest);
+        List<SearchResponsePreview> searchResponsePreviews = searchHistoryPage.getContent().stream()
+                .map(SearchResponsePreview::new)
                 .limit(5)
                 .collect(Collectors.toList());
         return searchResponsePreviews;
     }
 
     @PostMapping(value = "/history", consumes = "application/json", produces = "application/json")
-    public List<SearchResponsePreview> getHistory(
+    public HistoryResponse getHistory(
             @RequestBody HistoryRequest historyRequest,
             HttpServletRequest request) {
 
         AuthContext authContext = checkAuth(request);
 
-        List<SearchHistory> searchHistoryList = personSearchService.getHistory(authContext.getLogin());
-        List<SearchResponsePreview> searchResponsePreviews = searchHistoryList.stream()
-                .map(h -> new SearchResponsePreview(h))
+        Page<SearchHistory> searchHistoryPage = personSearchService.getHistoryPage(historyRequest);
+        List<SearchResponsePreview> searchResponsePreviews = searchHistoryPage.stream()
+                .map(SearchResponsePreview::new)
                 .collect(Collectors.toList());
-        return searchResponsePreviews;
+
+        HistoryResponse historyResponse = new HistoryResponse();
+        historyResponse.setRecords(searchResponsePreviews);
+        historyResponse.setCurrentPage(searchHistoryPage.getNumber());
+        historyResponse.setPageCount(searchHistoryPage.getTotalPages());
+        historyResponse.setPageSize(historyRequest.getPageSize());
+
+        return historyResponse;
     }
 
     private AuthContext checkAuth(HttpServletRequest request) {
