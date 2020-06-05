@@ -28,6 +28,7 @@ info.txt
 /.nb-gradle/
 build/
 /logs/
+/tmp/
 
 ### VS Code ###
 .vscode/

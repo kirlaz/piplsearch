@@ -1,16 +1,26 @@
 package ru.mgap.infosearchui.dataobject;
 
-public class SearchResponsePreview {
-    private long personId;
-    private String name;
-    private String response;
+import ru.mgap.infosearchui.entity.SearchHistory;
 
-    public long getPersonId() {
-        return personId;
+public class SearchResponsePreview {
+    private long searchHistoryId;
+    private String name;
+
+    public SearchResponsePreview(SearchHistory searchHistory) {
+        this(searchHistory.getSearchHistoryId(), searchHistory.getName());
     }
 
-    public void setPersonId(long personId) {
-        this.personId = personId;
+    public SearchResponsePreview(long personId, String name) {
+        this.searchHistoryId = personId;
+        this.name = name;
+    }
+
+    public long getSearchHistoryId() {
+        return searchHistoryId;
+    }
+
+    public void setSearchHistoryId(long searchHistoryId) {
+        this.searchHistoryId = searchHistoryId;
     }
 
     public String getName() {
@@ -21,11 +31,4 @@ public class SearchResponsePreview {
         this.name = name;
     }
 
-    public String getResponse() {
-        return response;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
-    }
 }

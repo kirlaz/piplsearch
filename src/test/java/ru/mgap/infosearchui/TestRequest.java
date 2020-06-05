@@ -11,7 +11,7 @@ import java.net.URLEncoder;
 
 public class TestRequest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         SearchConfiguration configuration = new SearchConfiguration();
         configuration.setProtocol("https");
@@ -35,6 +35,9 @@ public class TestRequest {
         } catch (SearchAPIError | IOException e) {
             System.out.println(e.getMessage());
         }
+
+        String responseJson = Utils.toJson(response);
+        System.out.println(responseJson);
 
 
         System.out.println(response.name());
