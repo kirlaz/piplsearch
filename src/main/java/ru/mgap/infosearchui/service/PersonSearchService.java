@@ -47,10 +47,12 @@ public class PersonSearchService {
 
         SearchAPIResponse response = null;
 
-        ArrayList<Email> emails = new ArrayList<>();
-        emails.add(new Email.Builder().address("clark.kent@example.com").build());
-        emails.addAll(searchAPIRequest.getPerson().getEmails());
-        searchAPIRequest.getPerson().setEmails(emails);
+        if(request.isTestMode()) {
+            ArrayList<Email> emails = new ArrayList<>();
+            emails.add(new Email.Builder().address("clark.kent@example.com").build());
+            emails.addAll(searchAPIRequest.getPerson().getEmails());
+            searchAPIRequest.getPerson().setEmails(emails);
+        }
 
         try {
             logger.info("request: {}", Utils.toJson(request));
