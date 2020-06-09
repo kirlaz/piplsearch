@@ -9,3 +9,5 @@
 2. SSL на сервере
 3. Аутентификация через Spring Security
 
+
+Access-Control-Allow-Origin
