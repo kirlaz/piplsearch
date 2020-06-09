@@ -100,12 +100,12 @@ public class PersonSearchService {
     }
 
     public List<SearchHistory> getHistory(String login) {
-        List<SearchHistory> searchHistoryList = searchHistoryRepository.findByLogin(login);
+        List<SearchHistory> searchHistoryList = searchHistoryRepository.findByLoginOrderBySearchHistoryIdAsc(login);
         return searchHistoryList;
     }
 
     public Page<SearchHistory> getHistoryPage(HistoryRequest request) {
-        Page<SearchHistory> searchHistoryPage = searchHistoryRepository.findByLoginBetweenStartAndEndDate(
+        Page<SearchHistory> searchHistoryPage = searchHistoryRepository.findByLoginBetweenStartAndEndDateOrderBySearchHistoryIdAsc(
                 request.getUserLogin(), request.getStartDate(), request.getEndDate(),
                 PageRequest.of(request.getCurrentPage(), request.getPageSize()));
         return searchHistoryPage;

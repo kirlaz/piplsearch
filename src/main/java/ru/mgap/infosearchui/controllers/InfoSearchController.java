@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RestController
 public class InfoSearchController {
 
@@ -59,7 +60,6 @@ public class InfoSearchController {
         Page<SearchHistory> searchHistoryPage = personSearchService.getHistoryPage(historyRequest);
         List<SearchResponsePreview> searchResponsePreviews = searchHistoryPage.getContent().stream()
                 .map(SearchResponsePreview::new)
-                .limit(5)
                 .collect(Collectors.toList());
         return searchResponsePreviews;
     }

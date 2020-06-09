@@ -14,7 +14,7 @@ public class Json {
                 .email("clark.kent@example.com")
                 .firstName("Kirill")
                 .lastName("Lazarenko")
-                //.phone("+79265786260")
+                .phone("+79265786260")
                 .rawAddress("Moscow, Russia")
                 .build();
 
