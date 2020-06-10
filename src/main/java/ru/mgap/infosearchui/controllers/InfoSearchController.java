@@ -29,20 +29,34 @@ public class InfoSearchController {
         this.personSearchService = personSearchService;
     }
 
+    @GetMapping(value = "/oneLineSearch")
+    public SearchAPIResponse oneLineSearch(@RequestParam String query,
+                                           HttpServletRequest request) {
+        AuthContext authContext = SecUtils.checkAuth(request);
+        String[] parts = query.split(" ");
+        if (parts.length > 1) {
+
+        } else {
+            if (query.contains("@"))    {
+
+            }
+            //else if()
+        }
+        return null;
+    }
+
     @PostMapping(value = "/search", consumes = "application/json", produces = "application/json")
     public SearchAPIResponse search(@RequestBody SearchRequest searchRequest,
                                     HttpServletRequest request) {
-
-        AuthContext authContext = checkAuth(request);
-
+        AuthContext authContext = SecUtils.checkAuth(request);
         SearchAPIResponse response = personSearchService.search(searchRequest, authContext);
         return response;
     }
 
     @GetMapping("/getFromHistory")
     public SearchAPIResponse getSavedPerson(@RequestParam long searchHistoryId,
-                                        HttpServletRequest request) throws IOException {
-        checkAuth(request);
+                                            HttpServletRequest request) throws IOException {
+        SecUtils.checkAuth(request);
 
         SearchHistory historyPerson = personSearchService.getHistoryPerson(searchHistoryId);
         SearchAPIResponse searchAPIResponse = (SearchAPIResponse) Utils.fromJson(historyPerson.getResponseRaw(), SearchAPIResponse.class);
@@ -51,17 +65,20 @@ public class InfoSearchController {
     }
 
     @GetMapping("/topHistory")
-    public List<SearchResponsePreview> getHistory(HttpServletRequest request) {
-        AuthContext authContext = checkAuth(request);
+    public List<SearchHistory> getHistory(HttpServletRequest request) {
+        AuthContext authContext = SecUtils.checkAuth(request);
 
         HistoryRequest historyRequest = new HistoryRequest();
         historyRequest.setPageSize(5);
         historyRequest.setUserLogin(authContext.getLogin());
         Page<SearchHistory> searchHistoryPage = personSearchService.getHistoryPage(historyRequest);
+        searchHistoryPage.getContent().forEach(h -> h.setResponseRaw(null));
+        /*
         List<SearchResponsePreview> searchResponsePreviews = searchHistoryPage.getContent().stream()
                 .map(SearchResponsePreview::new)
                 .collect(Collectors.toList());
-        return searchResponsePreviews;
+         */
+        return searchHistoryPage.getContent();
     }
 
     @PostMapping(value = "/history", consumes = "application/json", produces = "application/json")
@@ -69,7 +86,7 @@ public class InfoSearchController {
             @RequestBody HistoryRequest historyRequest,
             HttpServletRequest request) {
 
-        AuthContext authContext = checkAuth(request);
+        AuthContext authContext = SecUtils.checkAuth(request);
 
         Page<SearchHistory> searchHistoryPage = personSearchService.getHistoryPage(historyRequest);
         List<SearchResponsePreview> searchResponsePreviews = searchHistoryPage.stream()
@@ -85,13 +102,6 @@ public class InfoSearchController {
         return historyResponse;
     }
 
-    private AuthContext checkAuth(HttpServletRequest request) {
-        final HttpSession session = request.getSession(true);
-        AuthContext authContext = (AuthContext) session.getAttribute("authContext");
-        if (authContext == null) {
-            throw new AuthException();
-        }
-        return authContext;
-    }
+
 
 }

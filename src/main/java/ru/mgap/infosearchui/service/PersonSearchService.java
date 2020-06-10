@@ -2,6 +2,7 @@ package ru.mgap.infosearchui.service;
 
 import com.pipl.api.data.Utils;
 import com.pipl.api.data.fields.Email;
+import com.pipl.api.data.fields.Phone;
 import com.pipl.api.search.SearchAPIError;
 import com.pipl.api.search.SearchAPIRequest;
 import com.pipl.api.search.SearchAPIResponse;
@@ -9,6 +10,7 @@ import com.pipl.api.search.SearchConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.mgap.infosearchui.dataobject.*;
 
@@ -21,6 +23,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mgap.infosearchui.entity.SearchHistory;
+import ru.mgap.infosearchui.exception.ServerError;
 import ru.mgap.infosearchui.repositories.SearchHistoryRepository;
 
 @Service
@@ -47,7 +50,7 @@ public class PersonSearchService {
 
         SearchAPIResponse response = null;
 
-        if(request.isTestMode()) {
+        if (request.isTestMode()) {
             ArrayList<Email> emails = new ArrayList<>();
             emails.add(new Email.Builder().address("clark.kent@example.com").build());
             emails.addAll(searchAPIRequest.getPerson().getEmails());
@@ -83,6 +86,10 @@ public class PersonSearchService {
 
     public SearchHistory getHistoryPerson(Long searchHistoryId) {
         Optional<SearchHistory> searchHistory = searchHistoryRepository.findById(searchHistoryId);
+
+        if (!searchHistory.isPresent())
+            throw new ServerError("Value for searchHistoryId not found: " + searchHistoryId);
+
         return searchHistory.get();
     }
 
@@ -96,18 +103,20 @@ public class PersonSearchService {
         searchHistory.setLogin(authContext.getLogin());
         searchHistory.setSearchDate(new Date());
         searchHistory.setResponseRaw(response.getJson());
+        searchHistory.setImgUrl(response.getPerson().images.isEmpty() ? null:
+                response.getPerson().images.get(0).getThumbnailUrl(200, 200, false, true, false));
         searchHistoryRepository.save(searchHistory);
     }
 
     public List<SearchHistory> getHistory(String login) {
-        List<SearchHistory> searchHistoryList = searchHistoryRepository.findByLoginOrderBySearchHistoryIdAsc(login);
+        List<SearchHistory> searchHistoryList = searchHistoryRepository.findByLoginOrderBySearchHistoryIdDesc(login);
         return searchHistoryList;
     }
 
     public Page<SearchHistory> getHistoryPage(HistoryRequest request) {
-        Page<SearchHistory> searchHistoryPage = searchHistoryRepository.findByLoginBetweenStartAndEndDateOrderBySearchHistoryIdAsc(
+        Page<SearchHistory> searchHistoryPage = searchHistoryRepository.findByLoginBetweenStartAndEndDateOrderBySearchHistoryIdDesc(
                 request.getUserLogin(), request.getStartDate(), request.getEndDate(),
-                PageRequest.of(request.getCurrentPage(), request.getPageSize()));
+                PageRequest.of(request.getCurrentPage(), request.getPageSize(), Sort.by(Sort.Direction.DESC, "searchHistoryId")));
         return searchHistoryPage;
     }
 }

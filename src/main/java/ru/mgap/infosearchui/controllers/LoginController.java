@@ -34,6 +34,7 @@ public class LoginController {
 
         if ("admin".equals(authRequest.getLogin())) {
             session.setAttribute("authContext", new AuthContext(authRequest.getLogin()));
+            logger.info("User {} auth success", authRequest.getLogin());
             return "ok";
         } else {
             Optional<User> user = userRepository.findById(authRequest.getLogin());
@@ -48,6 +49,7 @@ public class LoginController {
                 return "auth_error";
             }
 
+            logger.info("User {} auth success", authRequest.getLogin());
             session.setAttribute("authContext", new AuthContext(authRequest.getLogin()));
             return "ok";
         }
@@ -55,7 +57,9 @@ public class LoginController {
 
     @GetMapping(value = "/signout")
     public String signout(HttpServletRequest request) {
+        AuthContext authContext = SecUtils.checkAuth(request);
         final HttpSession session = request.getSession(true);
+        logger.info("User {} auth success", authContext.getLogin());
         session.setAttribute("authContext", null);
         return "ok";
     }

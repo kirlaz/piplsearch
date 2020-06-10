@@ -12,13 +12,13 @@ import java.util.List;
 
 public interface SearchHistoryRepository extends PagingAndSortingRepository<SearchHistory, Long> {
 
-    List<SearchHistory> findByLoginOrderBySearchHistoryIdAsc(String login);
+    List<SearchHistory> findByLoginOrderBySearchHistoryIdDesc(String login);
 
     @Query("select h from SearchHistory h " +
             "where (:userLogin is null or h.login = :userLogin) " +
             "and (:startDate is null or h.searchDate>:startDate) " +
             "and (:endDate is null or h.searchDate<:endDate)")
-    Page<SearchHistory> findByLoginBetweenStartAndEndDateOrderBySearchHistoryIdAsc(
+    Page<SearchHistory> findByLoginBetweenStartAndEndDateOrderBySearchHistoryIdDesc(
             @Param("userLogin") String userLogin,
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
