@@ -21,7 +21,6 @@ public class Json {
         String reqJson = Utils.toJson(request.getPerson());
         System.out.println(reqJson);
 
-
         AuthRequest authRequest = new AuthRequest();
         authRequest.setLogin("admin");
         authRequest.setPassword("password");

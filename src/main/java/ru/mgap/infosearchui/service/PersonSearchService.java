@@ -2,29 +2,31 @@ package ru.mgap.infosearchui.service;
 
 import com.pipl.api.data.Utils;
 import com.pipl.api.data.fields.Email;
-import com.pipl.api.data.fields.Phone;
 import com.pipl.api.search.SearchAPIError;
 import com.pipl.api.search.SearchAPIRequest;
 import com.pipl.api.search.SearchAPIResponse;
 import com.pipl.api.search.SearchConfiguration;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.mgap.infosearchui.dataobject.*;
+import ru.mgap.infosearchui.dataobject.AuthContext;
+import ru.mgap.infosearchui.dataobject.HistoryRequest;
+import ru.mgap.infosearchui.dataobject.SearchRequest;
+import ru.mgap.infosearchui.entity.SearchHistory;
+import ru.mgap.infosearchui.exception.ServerError;
+import ru.mgap.infosearchui.repositories.SearchHistoryRepository;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.mgap.infosearchui.entity.SearchHistory;
-import ru.mgap.infosearchui.exception.ServerError;
-import ru.mgap.infosearchui.repositories.SearchHistoryRepository;
 
 @Service
 public class PersonSearchService {
@@ -103,8 +105,17 @@ public class PersonSearchService {
         searchHistory.setLogin(authContext.getLogin());
         searchHistory.setSearchDate(new Date());
         searchHistory.setResponseRaw(response.getJson());
-        searchHistory.setImgUrl(response.getPerson().images.isEmpty() ? null:
-                response.getPerson().images.get(0).getThumbnailUrl(200, 200, false, true, false));
+
+        if (!response.getPerson().images.isEmpty()) {
+            String imgUrl = response.getPerson().images.get(0).getThumbnailUrl(180, 180, false, true, false);
+            try {
+                searchHistory.setImgUrl(imgUrl);
+                searchHistory.setImg(getBase64EncodedImage(imgUrl));
+            } catch (IOException e) {
+                throw new ServerError(e);
+            }
+        }
+
         searchHistoryRepository.save(searchHistory);
     }
 
@@ -118,5 +129,12 @@ public class PersonSearchService {
                 request.getUserLogin(), request.getStartDate(), request.getEndDate(),
                 PageRequest.of(request.getCurrentPage(), request.getPageSize(), Sort.by(Sort.Direction.DESC, "searchHistoryId")));
         return searchHistoryPage;
+    }
+
+    public String getBase64EncodedImage(String imageURL) throws IOException {
+        java.net.URL url = new java.net.URL(imageURL);
+        InputStream is = url.openStream();
+        byte[] bytes = org.apache.commons.io.IOUtils.toByteArray(is);
+        return Base64.encodeBase64String(bytes);
     }
 }

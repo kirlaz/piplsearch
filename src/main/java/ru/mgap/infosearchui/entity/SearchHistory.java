@@ -1,7 +1,5 @@
 package ru.mgap.infosearchui.entity;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -14,7 +12,6 @@ public class SearchHistory {
     @Column(nullable = false)
     private String name;
 
-    @Expose(serialize = false, deserialize = false)
     @Lob
     @Column(nullable = false)
     private String responseRaw;
@@ -26,8 +23,12 @@ public class SearchHistory {
     private String login;
 
     @Lob
-    @Column(length=1024)
+    @Column(nullable = true, length=1024)
     private String imgUrl;
+
+    @Lob
+    private String img;
+
 
     public Long getSearchHistoryId() {
         return searchHistoryId;
@@ -67,6 +68,14 @@ public class SearchHistory {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 
     public String getImgUrl() {

@@ -12,4 +12,6 @@ public class SearchRequest extends Person {
     public void setTestMode(boolean testMode) {
         this.testMode = testMode;
     }
+
+
 }

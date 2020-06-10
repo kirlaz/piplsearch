@@ -49,6 +49,7 @@ public class InfoSearchController {
     public SearchAPIResponse search(@RequestBody SearchRequest searchRequest,
                                     HttpServletRequest request) {
         AuthContext authContext = SecUtils.checkAuth(request);
+        logger.info("User {} search", authContext.getLogin());
         SearchAPIResponse response = personSearchService.search(searchRequest, authContext);
         return response;
     }
@@ -56,7 +57,8 @@ public class InfoSearchController {
     @GetMapping("/getFromHistory")
     public SearchAPIResponse getSavedPerson(@RequestParam long searchHistoryId,
                                             HttpServletRequest request) throws IOException {
-        SecUtils.checkAuth(request);
+        AuthContext authContext = SecUtils.checkAuth(request);
+        logger.info("User {} getSavedPerson {}", authContext.getLogin(), searchHistoryId);
 
         SearchHistory historyPerson = personSearchService.getHistoryPerson(searchHistoryId);
         SearchAPIResponse searchAPIResponse = (SearchAPIResponse) Utils.fromJson(historyPerson.getResponseRaw(), SearchAPIResponse.class);
@@ -65,8 +67,9 @@ public class InfoSearchController {
     }
 
     @GetMapping("/topHistory")
-    public List<SearchHistory> getHistory(HttpServletRequest request) {
+    public List<SearchHistory> topHistory(HttpServletRequest request) {
         AuthContext authContext = SecUtils.checkAuth(request);
+        logger.info("User {} topHistory", authContext.getLogin());
 
         HistoryRequest historyRequest = new HistoryRequest();
         historyRequest.setPageSize(5);
@@ -87,6 +90,7 @@ public class InfoSearchController {
             HttpServletRequest request) {
 
         AuthContext authContext = SecUtils.checkAuth(request);
+        logger.info("User {} getHistory", authContext.getLogin());
 
         Page<SearchHistory> searchHistoryPage = personSearchService.getHistoryPage(historyRequest);
         List<SearchResponsePreview> searchResponsePreviews = searchHistoryPage.stream()
