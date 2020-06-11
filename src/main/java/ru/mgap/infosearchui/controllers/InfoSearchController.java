@@ -8,11 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import ru.mgap.infosearchui.dataobject.*;
 import ru.mgap.infosearchui.entity.SearchHistory;
-import ru.mgap.infosearchui.exception.AuthException;
 import ru.mgap.infosearchui.service.PersonSearchService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,18 +29,11 @@ public class InfoSearchController {
 
     @GetMapping(value = "/oneLineSearch")
     public SearchAPIResponse oneLineSearch(@RequestParam String query,
+                                           @RequestParam String location,
                                            HttpServletRequest request) {
         AuthContext authContext = SecUtils.checkAuth(request);
-        String[] parts = query.split(" ");
-        if (parts.length > 1) {
-
-        } else {
-            if (query.contains("@"))    {
-
-            }
-            //else if()
-        }
-        return null;
+        logger.info("User {} oneLineSearch", authContext.getLogin());
+        return personSearchService.searchOneLine(query, location, authContext);
     }
 
     @PostMapping(value = "/search", consumes = "application/json", produces = "application/json")

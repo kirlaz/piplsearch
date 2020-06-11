@@ -1,7 +1,10 @@
 package ru.mgap.infosearchui.service;
 
 import com.pipl.api.data.Utils;
+import com.pipl.api.data.fields.Address;
 import com.pipl.api.data.fields.Email;
+import com.pipl.api.data.fields.Name;
+import com.pipl.api.data.fields.Phone;
 import com.pipl.api.search.SearchAPIError;
 import com.pipl.api.search.SearchAPIRequest;
 import com.pipl.api.search.SearchAPIResponse;
@@ -86,6 +89,24 @@ public class PersonSearchService {
         return response;
     }
 
+    public SearchAPIResponse searchOneLine(String query, String location, AuthContext authContext) {
+        SearchRequest request = new SearchRequest();
+        if (SearchUtil.isPhone(query)) {
+            request.phones.add(new Phone(query));
+        } else if (SearchUtil.isEmail(query)) {
+            request.emails.add(new Email.Builder().address(query).build());
+        } else {
+            request.names.add(new Name(query));
+        }
+
+        if (location != null) {
+            request.addresses.add(new Address(location));
+        }
+
+        request.setTestMode(true);
+        return search(request, authContext);
+    }
+
     public SearchHistory getHistoryPerson(Long searchHistoryId) {
         Optional<SearchHistory> searchHistory = searchHistoryRepository.findById(searchHistoryId);
 
@@ -137,4 +158,6 @@ public class PersonSearchService {
         byte[] bytes = org.apache.commons.io.IOUtils.toByteArray(is);
         return Base64.encodeBase64String(bytes);
     }
+
+
 }
