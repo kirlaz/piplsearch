@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
-@CrossOrigin
+@CrossOrigin(allowCredentials="true")
 @RestController
 public class LoginController {
 
