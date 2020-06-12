@@ -12,7 +12,7 @@ public class SecUtils {
         final HttpSession session = request.getSession(true);
         AuthContext authContext = (AuthContext) session.getAttribute("authContext");
         if (authContext == null) {
-            throw new AuthException();
+            throw new AuthException("not authenticated");
         }
         return authContext;
     }

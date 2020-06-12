@@ -1,18 +1,20 @@
 package ru.mgap.infosearchui.dataobject;
 
+import ru.mgap.infosearchui.entity.SearchHistory;
+
 import java.util.List;
 
 public class HistoryResponse {
-    private List<SearchResponsePreview> records;
+    private List<SearchHistory> records;
     private int currentPage;
     private int pageCount;
     private int pageSize;
 
-    public List<SearchResponsePreview> getRecords() {
+    public List<SearchHistory> getRecords() {
         return records;
     }
 
-    public void setRecords(List<SearchResponsePreview> records) {
+    public void setRecords(List<SearchHistory> records) {
         this.records = records;
     }
 

@@ -82,9 +82,7 @@ public class PersonSearchService {
             e.printStackTrace();
         }
 
-        if (response.getPerson() != null) {
-            savePerson(response, authContext);
-        }
+        savePerson(response, authContext);
 
         return response;
     }
@@ -119,15 +117,19 @@ public class PersonSearchService {
     private void savePerson(SearchAPIResponse response, AuthContext authContext) {
         SearchHistory searchHistory = new SearchHistory();
         String name = "none";
-        if (!response.getPerson().getNames().isEmpty()) {
+
+        if (response.getPerson() == null) {
+            name = "List of possible persons";
+        } else if (!response.getPerson().getNames().isEmpty()) {
             name = response.getPerson().getNames().get(0).getDisplay();
         }
+
         searchHistory.setName(name);
         searchHistory.setLogin(authContext.getLogin());
         searchHistory.setSearchDate(new Date());
         searchHistory.setResponseRaw(response.getJson());
 
-        if (!response.getPerson().images.isEmpty()) {
+        if (response.getPerson() != null && !response.getPerson().images.isEmpty()) {
             String imgUrl = response.getPerson().images.get(0).getThumbnailUrl(180, 180, false, true, false);
             try {
                 searchHistory.setImgUrl(imgUrl);

@@ -84,12 +84,10 @@ public class InfoSearchController {
         logger.info("User {} getHistory", authContext.getLogin());
 
         Page<SearchHistory> searchHistoryPage = personSearchService.getHistoryPage(historyRequest);
-        List<SearchResponsePreview> searchResponsePreviews = searchHistoryPage.stream()
-                .map(SearchResponsePreview::new)
-                .collect(Collectors.toList());
+        searchHistoryPage.getContent().forEach(h -> h.setResponseRaw(null));
 
         HistoryResponse historyResponse = new HistoryResponse();
-        historyResponse.setRecords(searchResponsePreviews);
+        historyResponse.setRecords(searchHistoryPage.getContent());
         historyResponse.setCurrentPage(searchHistoryPage.getNumber());
         historyResponse.setPageCount(searchHistoryPage.getTotalPages());
         historyResponse.setPageSize(historyRequest.getPageSize());
