@@ -18,14 +18,12 @@ public class TestRequest {
         configuration.apiKey = "t3og2sc4hd8x9ayvjw1yt72g";
 
         SearchAPIRequest request = new SearchAPIRequest.Builder()
-                .email("clark.kent@example.com")
-                .firstName("Kirill")
+                //.email("clark.kent@example.com")
+                .firstName("Кирилл")
                 .lastName("Lazarenko")
                 //.phone("+79265786260")
-                .rawAddress("Moscow, Russia")
+                .rawAddress("Москва")
                 .configuration(configuration).build();
-
-        System.out.println(request.getPerson().getJobs());
 
         //SearchAPIRequest request = new SearchAPIRequest.Builder().phone("+79265786260").configuration(configuration).build();
 
@@ -37,7 +35,7 @@ public class TestRequest {
         }
 
         String responseJson = Utils.toJson(response);
-        System.out.println(responseJson);
+        System.out.println("responseJson:" + responseJson);
 
 
         System.out.println(response.name());

@@ -55,15 +55,37 @@ public class PersonSearchService {
 
         SearchAPIResponse response = null;
 
-        if (request.isTestMode()) {
+        boolean noTestMode = false;
+        if (!request.getAddresses().isEmpty()) {
+            String zipCode = request.getAddresses().get(0).zipCode;
+            if ("777".equals(zipCode)) {
+                noTestMode = true;
+            }
+
+            if ("666".equals(zipCode)) {
+                logger.info("sleeping 10 sec and then throw Error");
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                throw new ServerError("Terrible server error!!!");
+            }
+        }
+
+        if (!noTestMode && request.isTestMode()) {
+            logger.info("Process request in TEST MODE");
             ArrayList<Email> emails = new ArrayList<>();
             emails.add(new Email.Builder().address("clark.kent@example.com").build());
             emails.addAll(searchAPIRequest.getPerson().getEmails());
             searchAPIRequest.getPerson().setEmails(emails);
         }
+        else    {
+            logger.info("Process request in PROD MODE");
+        }
 
         try {
-            logger.info("request: {}", Utils.toJson(request));
+            logger.info("== request: {}", Utils.toJson(request));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,7 +99,7 @@ public class PersonSearchService {
         }
 
         try {
-            logger.info("response: {}", Utils.toJson(response));
+            logger.info("== response: {}", Utils.toJson(response));
         } catch (IOException e) {
             e.printStackTrace();
         }

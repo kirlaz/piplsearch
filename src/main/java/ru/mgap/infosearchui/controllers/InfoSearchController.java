@@ -29,7 +29,7 @@ public class InfoSearchController {
 
     @GetMapping(value = "/oneLineSearch")
     public SearchAPIResponse oneLineSearch(@RequestParam String query,
-                                           @RequestParam String location,
+                                           @RequestParam(required = false) String location,
                                            HttpServletRequest request) {
         AuthContext authContext = SecUtils.checkAuth(request);
         logger.info("User {} oneLineSearch", authContext.getLogin());
