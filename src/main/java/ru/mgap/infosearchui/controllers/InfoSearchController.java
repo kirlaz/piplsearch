@@ -6,16 +6,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-import ru.mgap.infosearchui.dataobject.*;
+import ru.mgap.infosearchui.dataobject.AuthContext;
+import ru.mgap.infosearchui.dataobject.HistoryRequest;
+import ru.mgap.infosearchui.dataobject.HistoryResponse;
+import ru.mgap.infosearchui.dataobject.SearchRequest;
 import ru.mgap.infosearchui.entity.SearchHistory;
 import ru.mgap.infosearchui.service.PersonSearchService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@CrossOrigin(allowCredentials="true")
+@CrossOrigin(allowCredentials = "true")
 @RestController
 public class InfoSearchController {
 
@@ -52,7 +54,9 @@ public class InfoSearchController {
         logger.info("User {} getSavedPerson {}", authContext.getLogin(), searchHistoryId);
 
         SearchHistory historyPerson = personSearchService.getHistoryPerson(searchHistoryId);
-        SearchAPIResponse searchAPIResponse = (SearchAPIResponse) Utils.fromJson(historyPerson.getResponseRaw(), SearchAPIResponse.class);
+        SearchAPIResponse searchAPIResponse = (SearchAPIResponse) Utils.fromJson(
+                historyPerson.getResponseRaw(),
+                SearchAPIResponse.class);
 
         return searchAPIResponse;
     }
@@ -66,12 +70,7 @@ public class InfoSearchController {
         historyRequest.setPageSize(5);
         historyRequest.setUserLogin(authContext.getLogin());
         Page<SearchHistory> searchHistoryPage = personSearchService.getHistoryPage(historyRequest);
-        searchHistoryPage.getContent().forEach(h -> h.setResponseRaw(null));
-        /*
-        List<SearchResponsePreview> searchResponsePreviews = searchHistoryPage.getContent().stream()
-                .map(SearchResponsePreview::new)
-                .collect(Collectors.toList());
-         */
+        searchHistoryPage.getContent().forEach(h -> h.prepareForFrontend(false));
         return searchHistoryPage.getContent();
     }
 
@@ -84,17 +83,15 @@ public class InfoSearchController {
         logger.info("User {} getHistory", authContext.getLogin());
 
         Page<SearchHistory> searchHistoryPage = personSearchService.getHistoryPage(historyRequest);
-        searchHistoryPage.getContent().forEach(h -> h.setResponseRaw(null));
+        searchHistoryPage.getContent().forEach(h -> h.prepareForFrontend(true));
 
         HistoryResponse historyResponse = new HistoryResponse();
         historyResponse.setRecords(searchHistoryPage.getContent());
         historyResponse.setCurrentPage(searchHistoryPage.getNumber());
         historyResponse.setPageCount(searchHistoryPage.getTotalPages());
         historyResponse.setPageSize(historyRequest.getPageSize());
-
         return historyResponse;
     }
-
 
 
 }

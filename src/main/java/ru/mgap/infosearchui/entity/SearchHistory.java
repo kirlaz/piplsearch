@@ -1,12 +1,19 @@
 package ru.mgap.infosearchui.entity;
 
+import com.pipl.api.data.Utils;
+import com.pipl.api.data.containers.Person;
+import com.pipl.api.search.SearchAPIResponse;
+import ru.mgap.infosearchui.exception.ServerError;
+
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.Date;
 
 @Entity
 public class SearchHistory {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long searchHistoryId;
 
     @Column(nullable = false)
@@ -23,12 +30,14 @@ public class SearchHistory {
     private String login;
 
     @Lob
-    @Column(nullable = true, length=1024)
+    @Column(nullable = true, length = 1024)
     private String imgUrl;
 
     @Lob
-    private String img;
+    //private String img;
 
+    @Transient
+    private Person query;
 
     public Long getSearchHistoryId() {
         return searchHistoryId;
@@ -70,6 +79,7 @@ public class SearchHistory {
         this.login = login;
     }
 
+    /*
     public String getImg() {
         return img;
     }
@@ -77,6 +87,7 @@ public class SearchHistory {
     public void setImg(String img) {
         this.img = img;
     }
+     */
 
     public String getImgUrl() {
         return imgUrl;
@@ -84,5 +95,27 @@ public class SearchHistory {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public Person getQuery() {
+        return query;
+    }
+
+    public void setQuery(Person query) {
+        this.query = query;
+    }
+
+    public void prepareForFrontend(boolean withQuery) {
+        if (withQuery) {
+            String responseRaw = getResponseRaw();
+            SearchAPIResponse response = null;
+            try {
+                response = (SearchAPIResponse) Utils.fromJson(responseRaw, SearchAPIResponse.class);
+            } catch (IOException e) {
+                throw new ServerError(e);
+            }
+            setQuery(response.getQuery());
+        }
+        setResponseRaw(null);
     }
 }

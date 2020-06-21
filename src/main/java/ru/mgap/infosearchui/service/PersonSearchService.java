@@ -59,6 +59,7 @@ public class PersonSearchService {
         if (!request.getAddresses().isEmpty()) {
             String zipCode = request.getAddresses().get(0).zipCode;
             if ("777".equals(zipCode)) {
+                request.getAddresses().remove(0);
                 noTestMode = true;
             }
 
@@ -153,12 +154,8 @@ public class PersonSearchService {
 
         if (response.getPerson() != null && !response.getPerson().images.isEmpty()) {
             String imgUrl = response.getPerson().images.get(0).getThumbnailUrl(180, 180, false, true, false);
-            try {
-                searchHistory.setImgUrl(imgUrl);
-                searchHistory.setImg(getBase64EncodedImage(imgUrl));
-            } catch (IOException e) {
-                throw new ServerError(e);
-            }
+            searchHistory.setImgUrl(imgUrl);
+            //searchHistory.setImg(getBase64EncodedImage(imgUrl));
         }
 
         searchHistoryRepository.save(searchHistory);
