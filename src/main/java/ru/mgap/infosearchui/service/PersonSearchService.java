@@ -80,8 +80,7 @@ public class PersonSearchService {
             emails.add(new Email.Builder().address("clark.kent@example.com").build());
             emails.addAll(searchAPIRequest.getPerson().getEmails());
             searchAPIRequest.getPerson().setEmails(emails);
-        }
-        else    {
+        } else {
             logger.info("Process request in PROD MODE");
         }
 
@@ -120,11 +119,16 @@ public class PersonSearchService {
             request.names.add(new Name(query));
         }
 
+        boolean testMode = false;
         if (location != null) {
-            request.addresses.add(new Address(location));
+            if ("777".equals(location)) {
+                testMode = true;
+            } else {
+                request.addresses.add(new Address(location));
+            }
         }
 
-        request.setTestMode(true);
+        request.setTestMode(testMode);
         return search(request, authContext);
     }
 
