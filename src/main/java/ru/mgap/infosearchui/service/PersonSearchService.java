@@ -55,14 +55,17 @@ public class PersonSearchService {
 
         SearchAPIResponse response = null;
 
-        boolean noTestMode = false;
+        boolean noTestMode = true;
+
+        //for test
+        if (!request.getJobs().isEmpty() && "777".equals(request.getJobs().get(0).getTitle())) {
+            request.getJobs().remove(0);
+            noTestMode = false;
+        }
+
+        //for test server error
         if (!request.getAddresses().isEmpty()) {
             String zipCode = request.getAddresses().get(0).zipCode;
-            if ("777".equals(zipCode)) {
-                request.getAddresses().remove(0);
-                noTestMode = true;
-            }
-
             if ("666".equals(zipCode)) {
                 logger.info("sleeping 10 sec and then throw Error");
                 try {
@@ -104,7 +107,9 @@ public class PersonSearchService {
             e.printStackTrace();
         }
 
-        savePerson(response, authContext);
+        if (response.getPerson() != null) {
+            savePerson(response, authContext);
+        }
 
         return response;
     }
